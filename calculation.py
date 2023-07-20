@@ -10,8 +10,9 @@ def is_higher_precedence(op1, op2):
 def tokenize_expression(expression):
     tokens = []
     current_token = ""
-
-    for char in expression:
+    if expression[0] == '-':
+        expression = '0' + expression
+    for idx, char in enumerate(expression):
         if char.isspace():
             continue
 

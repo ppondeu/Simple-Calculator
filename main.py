@@ -3,6 +3,8 @@ import calculation as cal
 
 def click_button(exp_value, btn_text): 
     txt_display = exp_value.get()
+    if txt_display == "Error":
+        txt_display = "0"
     if btn_text == "=":
         try:
             txt_display = cal.infix_to_postfix(cal.tokenize_expression(txt_display))
@@ -13,8 +15,18 @@ def click_button(exp_value, btn_text):
             txt_display = '0'
         else:
             txt_display += btn_text
+    elif cal.is_operator(btn_text):
+        if cal.is_operator(txt_display[-1]):
+            if btn_text == '-' and txt_display == '0':
+                txt_display = btn_text
+            else:
+                txt_display = txt_display[:-1] + btn_text
+        else:
+            txt_display += btn_text
     else:
         if (txt_display == '0' and btn_text != '.') or (txt_display == "Error"):
+            txt_display = btn_text
+        elif txt_display == '0' and btn_text == '-':
             txt_display = btn_text
         else:
             txt_display += btn_text
@@ -61,5 +73,9 @@ if __name__ == '__main__':
     exp_value, exp_label = create_display()
     # create button
     btns = create_button(exp_value, exp_label)
-
+ 
+    app.bind('<Key>', lambda event: click_button(exp_value, event.char))
+    app.bind('<Return>', lambda event: click_button(exp_value, "="))
+    # clear display
+    app.bind('<Escape>', lambda event: exp_value.set("0"))
     app.mainloop()
