@@ -4,29 +4,41 @@ def is_operator(ch):
     return ch in '^*/%+-'
 
 def is_higher_precedence(op1, op2):
+    print(f'op1: {op1}, op2: {op2}')
     precedence = {'^': 3, '*': 2, '/': 2, '%': 2, '+': 1, '-': 1}
     return precedence[op1] >= precedence[op2]
 
-def tokenize_expression(expression):
+def tokenize(expression):
     tokens = []
     current_token = ""
-    if expression[0] == '-':
-        expression = '0' + expression
-    for idx, char in enumerate(expression):
-        if char.isspace():
-            continue
+    operators = set("^*/%+-")
 
-        if is_operator(char) or char in '()':
+    for ch in expression:
+        if ch.isspace():
+            continue
+        elif ch in operators:
             if current_token:
                 tokens.append(current_token)
                 current_token = ""
-            tokens.append(char)
+                tokens.append(ch)
+            else:
+                if ch == '-':
+                    current_token = '-'
+                else:
+                    tokens.append(ch)
+        elif ch == '(' or ch == ')':
+            if current_token:
+                tokens.append(current_token)
+                current_token = ""
+            tokens.append(ch)
+        elif ch == '.':
+            current_token += ch
+        elif ch.isdigit():
+            current_token += ch
         else:
-            current_token += char
-
+            print(f"Invalid character: {ch}")
     if current_token:
         tokens.append(current_token)
-
     return tokens
 
 def calculate(operand1, operand2, operator):
@@ -52,9 +64,8 @@ def infix_to_postfix(tokens):
     num_postfix = deque()
     op_postfix = deque()
     op_stack = []
-
     for token in tokens:
-        if token.isalnum() or '.' in token:
+        if token not in '^*/%+-()':
             num_postfix.append(token)
         elif token == '(':
             op_stack.append(token)
@@ -86,8 +97,9 @@ def infix_to_postfix(tokens):
         # print(operand2, op, operand1, '=', calculate(operand2, operand1, op))
         num_postfix.append(Decimal(calculate(operand2, operand1, op)))
     return str(num_postfix.pop())
+
 if __name__ == '__main__':
     expression = input('Enter infix expression: ')
-    tokens = tokenize_expression(expression)
+    tokens = tokenize(expression)
     print(tokens)
     print(infix_to_postfix(tokens))
