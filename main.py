@@ -1,7 +1,9 @@
 import tkinter as tk
 import calculation as cal
-
-def click_button(exp_value, btn_text): 
+# global op_check, dot_check
+# op_check, dot_check = False, False
+def click_button(exp_value, btn_text):
+    # global op_check, dot_check
     txt_display = exp_value.get()
     if txt_display == "Error":
         txt_display = "0"
@@ -37,7 +39,7 @@ def create_display():
     display_frame = tk.Frame(app, bg="black")
     display_frame.place(width=APP_WIDTH, height=100)
     exp_value = tk.StringVar(value="0")
-    exp_label = tk.Label(display_frame, textvariable=exp_value, anchor="e", bg="red", fg="white", padx=10,  font=("Arial", 20))
+    exp_label = tk.Label(display_frame, textvariable=exp_value, anchor="e", bg="#c41c37", fg="white", padx=10,  font=("Arial", 20))
     exp_label.place(x=0, y=0, width=APP_WIDTH, height=100)
     return exp_value, exp_label
 
@@ -55,7 +57,7 @@ def create_button(exp_value, exp_label):
     btns = []
     for i in range(4):
         for j in range(4):
-            btn = tk.Button(button_frame, text=buttons[i*4+j], font=("Arial", 20), command = lambda btn_text=buttons[i*4+j]: click_button(exp_value,btn_text))
+            btn = tk.Button(button_frame, text=buttons[i*4+j], font=("Arial", 20), bg='#2b5db4', command = lambda btn_text=buttons[i*4+j]: click_button(exp_value,btn_text))
             btn.place(x=j*100, y=i*100, width=100, height=100)
             btns.append(btn)
     return btns
